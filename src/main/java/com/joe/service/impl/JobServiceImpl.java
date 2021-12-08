@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.joe.common.Result;
 import com.joe.entity.QuartzJob;
+import com.joe.job.MyJob;
 import com.joe.mapper.JobMapper;
 import com.joe.service.IJobService;
 import org.quartz.*;
@@ -39,11 +40,16 @@ public class JobServiceImpl implements IJobService {
             }
 
             //构建job信息
-            Class cls = Class.forName(quartz.getJobClassName()) ;
+            // 第一种方式：从页面传入值 如：com.joe.job.MyJob 包名获取class对象
+            //Class cls = Class.forName(quartz.getJobClassName()) ;
+            // 第二种方式：直接使用MyJob获取class对象
+            Class cls = MyJob.class;
             cls.newInstance();
             JobDetail job = JobBuilder.newJob(cls).withIdentity(quartz.getJobName(),
                     quartz.getJobGroup())
                     .withDescription(quartz.getDescription()).build();
+            //添加参数
+            job.getJobDataMap().put("jobParam", quartz.getJobDataParam());
             // 触发时间点
             CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartz.getCronExpression().trim());
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger"+quartz.getJobName(), quartz.getJobGroup())

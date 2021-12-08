@@ -3,11 +3,16 @@ package com.joe.job;
 import com.joe.entity.TestEntity;
 import com.joe.util.RestTemplateUtil;
 import lombok.Data;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 public class MyJob extends QuartzJobBean {
@@ -21,9 +26,14 @@ public class MyJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         String url = "http://localhost:8080/quartz/rest/getEntity";
-
         TestEntity entity = RestTemplateUtil.getRequest(url, TestEntity.class);
         LOGGER.info("entity = {}", entity);
+        JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+        List<Map<String, Object>> jobParam = (List<Map<String, Object>>) dataMap.get("jobParam");
+        if (jobParam!=null){
+            jobParam.stream().collect(Collectors.toList());
+            jobParam.forEach(System.out::println);
+        }
         System.out.println("MyJob...");
     }
 }
