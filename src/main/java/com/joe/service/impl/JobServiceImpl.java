@@ -57,7 +57,7 @@ public class JobServiceImpl implements IJobService {
             // 触发时间点
             CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartz.getCronExpression().trim());
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger"+quartz.getJobName(), quartz.getJobGroup())
-                    .startNow().withSchedule(cronScheduleBuilder).build();
+                    .startNow().withPriority(quartz.getPriority()).withSchedule(cronScheduleBuilder).build();
             //交由Scheduler安排触发
             scheduler.scheduleJob(job, trigger);
         } catch (Exception e) {

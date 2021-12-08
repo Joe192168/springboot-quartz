@@ -7,7 +7,7 @@
 
     <title>任务首页 - quartz</title>
     <meta name="author" content="admin" />
-    <meta name="site" content="https://www.cnblogs.com/youzhibing/" />
+    <meta name="site" content="https://www.cnblogs.com/joe/" />
     <link rel="stylesheet" th:href="@{/iview/iview.css}">
     <script th:src="@{/libs/jquery-3.2.1.min.js}" type="text/javascript"></script>
 	<script th:src="@{/libs/vue.min.js}" type="text/javascript"></script>
@@ -37,8 +37,13 @@
 	        </Form-item>
 	        <Form-item label="执行时间" prop="cronExpression">
                 <i-input v-model="formQuartz.cronExpression" :value.sync="formQuartz.cronExpression" placeholder="请输入任务执行时间"></i-input>
-                <i-button style="float:right" type="info" @click="addJobData()" icon="person-add" title="添加job参数"></i-button>
             </Form-item>
+			<Form-item label="优先级" prop="priority">
+				<i-select v-model="formQuartz.priority" :value.sync="formQuartz.priority">
+					<i-option :value="item.code" v-for="item in dataList" v-bind:key="item.id">{{item.name}}</i-option>
+				</i-select>
+				<i-button style="float:right" type="info" @click="addJobData()" icon="person-add" title="添加job参数"></i-button>
+			</Form-item>
             <li v-for="(item, index) in formQuartz.jobDataParam" :key="index">
                 <input v-model="item.paramName" placeholder="参数名"/>
                 <input v-model="item.paramValue" placeholder="参数值" />
@@ -57,6 +62,7 @@ var vm = new Vue({
 			description : '',
 			jobClassName : '',
 			cronExpression : '',
+			priority : 0,
 			//旧任务名称  用于修改
 			oldJobName : '',
 			oldJobGroup : '',
@@ -77,8 +83,30 @@ var vm = new Vue({
             ],
             cronExpression: [
                 { required: true, message: '执行时间不能为空', trigger: 'blur' }
-            ]
-        }
+            ],
+			priority: [
+				{ required: true, message: '优先级不能为空', trigger: 'blur' }
+			]
+        },
+		formSend: {
+			code: '',
+			id: ''
+		},
+		dataList: [{
+			id: 3,
+			name: '高',
+			code: '3'
+		},
+		{
+			id: 2,
+			name: '中',
+			code: '2'
+		},
+		{
+			id: 1,
+			name: '低',
+			code: '1'
+		}]
 	},
 	methods : {
 		//新建任务(略简单)
@@ -86,7 +114,7 @@ var vm = new Vue({
 		  //Validate不起作用MD
 		  var quartz =  vm.formQuartz;
 		  if(vm.formQuartz.jobName==""||vm.formQuartz.jobGroup==""||vm.formQuartz.description==""
-				  ||vm.formQuartz.jobClassName==""||vm.formQuartz.cronExpression==""){
+				  ||vm.formQuartz.jobClassName==""||vm.formQuartz.cronExpression==""||vm.formQuartz.priority==0){
 			  alert("请输入以上完整信息");
 			  return;
 		  }

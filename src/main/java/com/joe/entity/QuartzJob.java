@@ -15,11 +15,10 @@ public class QuartzJob {
 	private String cronExpression;//执行时间
 	private String triggerName;//执行时间
 	private String triggerState;//任务状态
-
 	private String oldJobName;//任务名称 用于修改
 	private String oldJobGroup;//任务分组 用于修改
-
-	private List<Map<String, Object>> jobDataParam;
+	private List<Map<String, Object>> jobDataParam;//任务自定义参数
+	private Integer priority;//任务的优先级
 	
 	public QuartzJob() {
 		super();
