@@ -3,6 +3,8 @@ package com.joe.job;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 /**
@@ -52,11 +54,7 @@ public class PriorityExample {
 
         sched.start();
 
-        try {
-            Thread.sleep(30L * 1000L); 
-            // executing...
-        } catch (Exception e) {
-        }
+        TimeUnit.SECONDS.sleep(10);
 
         sched.shutdown(true);
     }
