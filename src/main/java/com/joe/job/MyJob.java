@@ -13,6 +13,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 public class MyJob extends QuartzJobBean {
@@ -31,8 +32,14 @@ public class MyJob extends QuartzJobBean {
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         List<Map<String, Object>> jobParam = (List<Map<String, Object>>) dataMap.get("jobParam");
         if (jobParam!=null){
+            //整体打印
             jobParam.stream().collect(Collectors.toList());
             jobParam.forEach(System.out::println);
+            //精准打印
+            jobParam.stream().forEach(m->{
+                System.out.println(m.get("paramName"));
+                System.out.println(m.get("paramValue"));
+            });
         }
         System.out.println("MyJob...");
     }

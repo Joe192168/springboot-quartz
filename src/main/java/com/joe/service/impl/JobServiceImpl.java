@@ -30,6 +30,11 @@ public class JobServiceImpl implements IJobService {
         return pageInfo;
     }
 
+    /**
+     * 新增/修改任务
+     * @param quartz
+     * @return
+     */
     @Override
     public Result saveJob(QuartzJob quartz){
         try {
@@ -38,7 +43,6 @@ public class JobServiceImpl implements IJobService {
                 JobKey key = new JobKey(quartz.getOldJobName(),quartz.getOldJobGroup());
                 scheduler.deleteJob(key);
             }
-
             //构建job信息
             // 第一种方式：从页面传入值 如：com.joe.job.MyJob 包名获取class对象
             //Class cls = Class.forName(quartz.getJobClassName()) ;
@@ -63,6 +67,12 @@ public class JobServiceImpl implements IJobService {
         return Result.ok();
     }
 
+    /**
+     * 触发任务
+     * @param jobName
+     * @param jobGroup
+     * @return
+     */
     @Override
     public Result triggerJob(String jobName, String jobGroup) {
         JobKey key = new JobKey(jobName,jobGroup);
@@ -75,6 +85,12 @@ public class JobServiceImpl implements IJobService {
         return Result.ok();
     }
 
+    /**
+     * 停止任务
+     * @param jobName
+     * @param jobGroup
+     * @return
+     */
     @Override
     public Result pauseJob(String jobName, String jobGroup) {
         JobKey key = new JobKey(jobName,jobGroup);
@@ -87,6 +103,12 @@ public class JobServiceImpl implements IJobService {
         return Result.ok();
     }
 
+    /**
+     * 恢复任务
+     * @param jobName
+     * @param jobGroup
+     * @return
+     */
     @Override
     public Result resumeJob(String jobName, String jobGroup) {
         JobKey key = new JobKey(jobName,jobGroup);
@@ -99,6 +121,12 @@ public class JobServiceImpl implements IJobService {
         return Result.ok();
     }
 
+    /**
+     * 移除任务
+     * @param jobName
+     * @param jobGroup
+     * @return
+     */
     @Override
     public Result removeJob(String jobName, String jobGroup) {
         try {
