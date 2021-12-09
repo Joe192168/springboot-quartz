@@ -4,13 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.joe.common.Result;
 import com.joe.entity.QuartzJob;
-import com.joe.job.MyJob;
 import com.joe.mapper.JobMapper;
 import com.joe.service.IJobService;
+import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -44,10 +43,16 @@ public class JobServiceImpl implements IJobService {
                 scheduler.deleteJob(key);
             }
             //构建job信息
-            // 第一种方式：从页面传入值 如：com.joe.job.MyJob 包名获取class对象
-            //Class cls = Class.forName(quartz.getJobClassName()) ;
-            // 第二种方式：直接使用MyJob获取class对象
-            Class cls = obj.getClass();
+            //构建job信息
+            Class cls = null;
+            //第一种方式：从页面传入值 如：包+类 包名获取class对象
+            if (StringUtils.isNotEmpty(quartz.getJobClassName())){
+                cls = Class.forName(quartz.getJobClassName());
+            }
+            //第二种方式：直接使用obj对象获取class
+            if (cls==null&&obj!=null){
+                cls = obj.getClass();
+            }
             cls.newInstance();
             JobDetail job = JobBuilder.newJob(cls).withIdentity(quartz.getJobName(),
                     quartz.getJobGroup())

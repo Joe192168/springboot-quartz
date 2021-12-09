@@ -78,9 +78,9 @@ var vm = new Vue({
             description: [
                 { required: true, message: '任务描述不能为空', trigger: 'blur' }
             ],
-            jobClassName: [
+            /*jobClassName: [
                 { required: true, message: '执行类不能为空', trigger: 'blur' }
-            ],
+            ],*/
             cronExpression: [
                 { required: true, message: '执行时间不能为空', trigger: 'blur' }
             ],
@@ -114,7 +114,7 @@ var vm = new Vue({
 		  //Validate不起作用MD
 		  var quartz =  vm.formQuartz;
 		  if(vm.formQuartz.jobName==""||vm.formQuartz.jobGroup==""||vm.formQuartz.description==""
-				  ||vm.formQuartz.jobClassName==""||vm.formQuartz.cronExpression==""||vm.formQuartz.priority==0){
+				  ||vm.formQuartz.cronExpression==""||vm.formQuartz.priority==0){
 			  alert("请输入以上完整信息");
 			  return;
 		  }

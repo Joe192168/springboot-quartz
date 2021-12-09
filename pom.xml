@@ -79,6 +79,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
         <!-- quartz 的jar -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
