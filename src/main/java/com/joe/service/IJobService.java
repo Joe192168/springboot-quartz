@@ -13,7 +13,7 @@ public interface IJobService {
      * @param quartz
      * @return
      */
-    Result saveJob(QuartzJob quartz);
+    Result saveJob(QuartzJob quartz,Object o);
 
     /**
      * 触发job

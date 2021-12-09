@@ -36,7 +36,7 @@ public class JobServiceImpl implements IJobService {
      * @return
      */
     @Override
-    public Result saveJob(QuartzJob quartz){
+    public Result saveJob(QuartzJob quartz,Object obj){
         try {
             //如果是修改  展示旧的 任务
             if(quartz.getOldJobGroup() != null && !"".equals(quartz.getOldJobGroup())){
@@ -47,7 +47,7 @@ public class JobServiceImpl implements IJobService {
             // 第一种方式：从页面传入值 如：com.joe.job.MyJob 包名获取class对象
             //Class cls = Class.forName(quartz.getJobClassName()) ;
             // 第二种方式：直接使用MyJob获取class对象
-            Class cls = MyJob.class;
+            Class cls = obj.getClass();
             cls.newInstance();
             JobDetail job = JobBuilder.newJob(cls).withIdentity(quartz.getJobName(),
                     quartz.getJobGroup())

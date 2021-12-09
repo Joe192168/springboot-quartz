@@ -3,11 +3,14 @@ package com.joe.controller;
 import com.github.pagehelper.PageInfo;
 import com.joe.common.Result;
 import com.joe.entity.QuartzJob;
+import com.joe.job.MyJob;
+import com.joe.job.TestJob;
 import com.joe.service.IJobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,9 +24,10 @@ public class JobController {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @PostMapping("/add")
-    public Result save(QuartzJob quartz){
+    public Result save(@RequestBody QuartzJob quartz){
         LOGGER.info("新增任务");
-        Result result = jobService.saveJob(quartz);
+        TestJob testJob = new TestJob();
+        Result result = jobService.saveJob(quartz,testJob);
         return result;
     }
     @PostMapping("/list")

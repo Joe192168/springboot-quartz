@@ -121,7 +121,10 @@ var vm = new Vue({
 		  $.ajax({
 				url:"../job/add",
 				type:"post",
-				data:quartz,
+			    contentType: "application/json",
+				data: JSON.stringify(quartz),
+			    dataType: 'json',
+			    cache: false,
 				success: function(result) {
 					if(result.code == 200){
 						window.parent.location.reload();
