@@ -25,6 +25,10 @@ docker restart mysql
 
 #添加Job 的执行类，如：com.joe.job.MyJob
 
+该调度测试支持简单的业务操作
+
+http://localhost:8080/quartz/main.shtml
+
 
 基于Quartz调度插件，进行封装优化简单，高效的调度框架，为第三方系统集成大大简化了配置和开发难度。
 
