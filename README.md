@@ -24,3 +24,62 @@ service mysql restart
 docker restart mysql
 
 #添加Job 的执行类，如：com.joe.job.MyJob
+
+
+基于Quartz调度插件，进行封装优化简单，高效的调度框架，为第三方系统集成大大简化了配置和开发难度。
+
+第三方应用集成操作说明：
+
+这块主要以springboot框架集成为主
+
+1、首先在项目的pom文件中添加maven依赖包
+
+<dependency>
+    <groupId>com.geominfo.scheduler</groupId>
+    <artifactId>geometry-scheduler</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+
+2、初始化调度所使用的表sql脚本
+[不同数据库sql脚本](http://47.97.200.230:9091/xqh/geometry-scheduler/blob/master/1.png)
+
+
+3、application.yml中配置调度的相关属性
+
+`spring:
+   quartz:
+     #相关属性配置
+     properties:
+       org:
+         quartz:
+           scheduler:
+             instanceName: quartzScheduler
+             instanceId: AUTO
+           jobStore:
+             class: org.quartz.impl.jdbcjobstore.JobStoreTX
+             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+             tablePrefix: QRTZ_
+             isClustered: false
+             clusterCheckinInterval: 10000
+             useProperties: false
+             dataSource: quartzDs
+           threadPool:
+             class: org.quartz.simpl.SimpleThreadPool
+             threadCount: 10
+             threadPriority: 5
+             threadsInheritContextClassLoaderOfInitializingThread: true
+     #数据库方式
+     job-store-type: JDBC
+     #初始化表结构
+     jdbc:
+       initialize-schema: NEVER`
+
+4、在springboot的启动类上添加扫描注解
+
+@MapperScan({"com.geominfo.mapper"})
+@ComponentScan({"com.geominfo.services"})
+
+5、自定义controller中使用调度接口了
+
+@Autowired
+private IJobService jobService;
