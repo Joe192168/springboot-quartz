@@ -3,6 +3,8 @@ package com.joe.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.quartz.JobDataMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,6 @@ public class QuartzJob {
 	private String triggerState;//任务状态
 	private String oldJobName;//任务名称 用于修改
 	private String oldJobGroup;//任务分组 用于修改
-	private List<Map<String, Object>> jobDataParam;//任务自定义参数
+	private JobDataMap jobDataMap;//任务自定义参数
 	private Integer priority;//任务的优先级
 }

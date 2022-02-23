@@ -1,8 +1,12 @@
 package com.joe.job;
 
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+
+import java.util.List;
+import java.util.Map;
 
 public class TestJob extends QuartzJobBean {
 
@@ -12,6 +16,7 @@ public class TestJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("执行测试Job。。。"+context.getTrigger().getKey());
+        JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+        System.out.println("执行测试Job。。。"+context.getTrigger().getKey()+",参数："+dataMap.get("data"));
     }
 }
