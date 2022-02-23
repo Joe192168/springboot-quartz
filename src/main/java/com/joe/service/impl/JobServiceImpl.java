@@ -37,10 +37,10 @@ public class JobServiceImpl implements IJobService {
     @Override
     public Result saveJob(QuartzJob quartz,Object obj){
         try {
+            JobKey jobKey = new JobKey(quartz.getJobName(), quartz.getJobGroup());
             //如果是修改  展示旧的 任务
-            if(quartz.getOldJobGroup() != null && !"".equals(quartz.getOldJobGroup())){
-                JobKey key = new JobKey(quartz.getOldJobName(),quartz.getOldJobGroup());
-                scheduler.deleteJob(key);
+            if (scheduler.checkExists(jobKey)) {
+                scheduler.deleteJob(jobKey);
             }
             //构建job信息
             //构建job信息
@@ -58,9 +58,10 @@ public class JobServiceImpl implements IJobService {
                     quartz.getJobGroup())
                     .withDescription(quartz.getDescription()).build();
             //添加参数
-            job.getJobDataMap().put("jobParam", quartz.getJobDataParam());
+            job.getJobDataMap().putAll(quartz.getJobDataMap());
             // 触发时间点
             CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartz.getCronExpression().trim());
+            cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger"+quartz.getJobName(), quartz.getJobGroup())
                     .startNow().withPriority(quartz.getPriority()).withSchedule(cronScheduleBuilder).build();
             //交由Scheduler安排触发
