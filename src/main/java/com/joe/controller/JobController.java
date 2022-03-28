@@ -5,6 +5,7 @@ import com.joe.common.Result;
 import com.joe.entity.QuartzJob;
 import com.joe.job.TestJob;
 import com.joe.service.IJobService;
+import org.quartz.JobDataMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,17 @@ public class JobController {
         Result result = jobService.saveJob(quartz,testJob);
         return result;
     }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @PostMapping("/add2")
+    public Result add(@RequestBody QuartzJob quartz){
+        LOGGER.info("新增/修改任务");
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("key1","测试001");
+        jobService.addJob(TestJob.class,quartz.getJobName(),quartz.getJobGroup(),1,2,jobDataMap);
+        return Result.ok();
+    }
+
     @PostMapping("/list/{jobName}/{pageNo}/{pageSize}")
     public PageInfo list(@PathVariable String jobName,@PathVariable Integer pageNo,@PathVariable Integer pageSize){
         LOGGER.info("任务列表");

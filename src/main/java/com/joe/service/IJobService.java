@@ -3,6 +3,8 @@ package com.joe.service;
 import com.github.pagehelper.PageInfo;
 import com.joe.common.Result;
 import com.joe.entity.QuartzJob;
+import org.quartz.JobDataMap;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 public interface IJobService {
 
@@ -46,4 +48,6 @@ public interface IJobService {
      * @return
      */
     Result removeJob(String jobName, String jobGroup);
+
+    void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int hour, int num, JobDataMap jobDataMap);
 }

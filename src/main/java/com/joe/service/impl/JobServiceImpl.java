@@ -9,6 +9,7 @@ import com.joe.service.IJobService;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -74,6 +75,41 @@ public class JobServiceImpl implements IJobService {
     }
 
     /**
+     * 增加一个job
+     *
+     * @param jobClass 任务实现类
+     * @param jobName 任务名称
+     * @param jobGroupName 任务组名
+     * @param hour 时间 (这是每隔多少小时为一次任务)
+     * @param num 运行的次数 （<0:表示不限次数）
+     * @param jobDataMap 参数
+     */
+    @Override
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int hour, int num, JobDataMap jobDataMap) {
+        try {
+            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName)// 任务名称和组构成任务key
+                    .build();
+            //在此处添加需要用的参数即可
+            jobDetail.getJobDataMap().putAll(jobDataMap);
+            // 使用simpleTrigger规则
+            Trigger trigger = null;
+            if (num < 0) {
+                trigger = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName)
+                        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(hour))
+                        .startNow().build();
+            } else {
+                trigger = TriggerBuilder
+                        .newTrigger().withIdentity(jobName, jobGroupName).withSchedule(SimpleScheduleBuilder
+                                .simpleSchedule().withIntervalInMinutes(hour).withRepeatCount(num))
+                        .startNow().build();
+            }
+            scheduler.scheduleJob(jobDetail, trigger);
+        } catch (SchedulerException e) {
+            e.getStackTrace();
+        }
+    }
+
+    /**
      * 触发任务
      * @param jobName
      * @param jobGroup
@@ -136,14 +172,12 @@ public class JobServiceImpl implements IJobService {
     @Override
     public Result removeJob(String jobName, String jobGroup) {
         try {
-            TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
-            // 停止触发器
-            scheduler.pauseTrigger(triggerKey);
-            // 移除触发器
-            scheduler.unscheduleJob(triggerKey);
-            // 删除任务
-            scheduler.deleteJob(JobKey.jobKey(jobName, jobGroup));
-            System.out.println("removeJob:"+JobKey.jobKey(jobName));
+            JobKey jobKey = new JobKey(jobName,jobGroup);
+            if(scheduler.checkExists(jobKey)){
+                // 删除任务
+                boolean b = scheduler.deleteJob(jobKey);
+                System.out.println("removeJob:"+jobName);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error();
